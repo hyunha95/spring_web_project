@@ -4,7 +4,7 @@ src/main/resources: 실행할 때 참고하는 기본 경로(주로 설정 파�
 servlet-context.xml: 웹과 관련된 스프링 설정 파일   
 web.xml: Tomcat의 web.xml파일   
 pom.xml: Maven이 사용하는 pom.xml   
-root-context.xml: 스프링 프레임워크에서 관리해야 하는 객체(Bean)를 설정하는 파일   
+root-context.xml: 스프링 프레임워크에서 관리해야 하는 객체(Bean)를 설정하는 파일. 스프링에서 root-context.xml은 스프링이 로딩되면서 읽어 들이는 문서이므로, 주로 이미 만들어진 클래스들을 이용해서 스프링의 빈(Bean)으로 등록할 때 사용된다.   
 
 경량 프레임워크(light-weight Framework): 과거 J2EE 기술은 너무나 복잡하고 방대했기 때문에, 특정 기능을 위주로 간단한 jar파일 등을 이용해서 모든 개발이 가능하도록 구성된 프레임워크   
 스프링의 주요특징
@@ -35,7 +35,29 @@ JUnit
 @Test는 JUnit에서 테스트 대상을 표시하는 어노테이션이다.   
 assertNotNull()은 해당 변수가 null이 아니어야만 테스트가 성공한다는 것을 의미한다.   
 
-'Spring Legacy Project'로 생성한 경우에는 기본적으로 Log4j 설정이 있기 때문에 추가적인 설정 없이 @Log4j만으로 로그 객체를 준비할 수 있다.
+'Spring Legacy Project'로 생성한 경우에는 기본적으로 Log4j 설정이 있기 때문에 추가적인 설정 없이 @Log4j만으로 로그 객체를 준비할 수 있다.   
+@Component는 해당 클래스가 스프링에서 객체로 만들어서 관리하는 대상임을 명시하는 어노테이션이다.   
+@Autowired는 스프링 내부에서 자신이 특정한 객체에 의존적이므로 자신에게 해당 타입의 빈을 주입해주라는 표시이다. 스프링은 @Autowired 어노테이션을 보고 스프링 내부에 관리되는 객체(들) 중에 적당한 것이 있는지를 확인하고, 자동으로 주입해 준다.
+@ContextConfiguration은 스프링이 실행되면서 어떤 설정 정보를 읽어 들어야 하는지 명시한다. 속성으로는 locations를 이용해서 문자열의 배열로 XML 설정 파일을 명시할 수도 있고, classes 속성으로 @Configuration이 적용된 클래스를 지정해 줄 수도 있다.   
+@RunWith는 테스트 시 필요한 클래스를 지정한다. 스프링은 SpringJUnit4ClassRunner 클래스가 대상이 된다.   
+@Test는 JUnit에서 해당 메서드가 JUint 상에서 단위 테스트의 대상인지 알려준다.   
+@AllArgsConstructor는 인스턴스 변수로 선언된 모든 것을 파라미터로 받는 생성자를 작성하게 된다.   
+@RequiredArgsConstructor는 @NonNull이나 final이 붙은 인스턴스 변수에 대한 생성자를 만들어 낸다.
+@Bean은 XML설정에서 <bean> 태그와 동일한 역할을 한다고 생각하면 된다. @Bean이 선언된 메서드의 실행 결과로 반환된 객체는 스프링의 객체로 등록된다.   
+
+Mapper
+--------------
+XML 매퍼를 이용할 때 신경 써야 하는 부분은 <mapper> 태그의 namespace 속성값이다. MyBatis는 Mapper 인터페이스와 XML을 인터페이스의 이름과 namespace 속성값을 가지고 판단한다.   
+<select> 태그의 id 속성값은 메서드의 이름과 동일하게 맞춰야 한다. <select> 태그의 경우 resultType 속성을 가지는데 이 값은 인터페이스에 선언된 메서드의 리턴 타입과 동일하게 작성한다.
+
+
+
+
+
+
+
+
+
 
 
 
