@@ -1,5 +1,7 @@
 # spring_web_project
 
+파트1
+====
 src/main/resources: 실행할 때 참고하는 기본 경로(주로 설정 파일들을 넣는다)   
 servlet-context.xml: 웹과 관련된 스프링 설정 파일   
 web.xml: Tomcat의 web.xml파일   
