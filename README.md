@@ -1,6 +1,65 @@
 # spring_web_project
+part2
+===
+프로젝트 구동 시 관여하는 XML은 web.xml, root-context.xml, servlet-context.xml 파일이다. 이 파일들 중 web.xml은 Tomcat 구동과 관련된 설정이고, 나머지 두 파일은 스프링과 관련된 설정이다. 프로젝트의 구동은 web.xml에서 시작한다.   
+root-context.xml에 정의된 객체(Bean)들은 스프링의 영역(Context) 안에 생성되고, 객체들 간의 의존성이 처리된다. root-context.xml이 처리된 후에는 스프링 MVC에서 사용하는 DispatcherServlet이라는 서블릿과 관련된 설정이 동작한다.   
+org.springframework.web.servlet.DispatcherServlet 클래스는 스프링 MVC의 구조에서 가장 핵심적인 역할을 하는 클래스이다. 내부적으로 웹 관련 처리의 준비작업을 진행하는데 이때 사용하는 파일이 servlet-context.xml이다.   
 
-파트1
+스프링 MVC의 기본 구조
+----
+1. 사용자의 Request는 Front-Controller인 DispatcherServlet을 통해서 처리한다.
+2. HandlerMapping은 Request의 처리를 담당하는 컨트롤러를 찾기 위해서 존재한다.
+3. 적절한 컨트롤러가 찾아졌다면 HandlerAdapter를 이용해서 해당 컨트롤러를 동작시킨다.
+4. Controller는 개발자가 작성하는 클래스로 실제 Request를 처리하는 로직을 작성하게 된다. 이때 View에 전달해야 하는 데이터는 주로 Model이라는 객체에 담아서 전달한다.
+5. ViewResolver는 Controller가 반환한 결과를 어떤 View를 통해서 처리하는 것이 좋을지 해석하는 역할이다.
+6. View는 실제로 응답 보내야 하는 데이터를 Jsp 등을 이용해서 생성하는 역할을 하게 된다. 만들어진 응답은 DispatcherServlet을 통해서 전송된다.   
+
+Controller의 파라미터 수집
+----
+Controller를 작성할 때 가장 편리한 기능은 파라미터가 자동으로 수집되는 기능이다. 이 기능을 이용하면 매번 request.getParameter()를 이용하는 불편함을 없앨 수 있다.   
+Controller가 파라미터를 수집하는 방식은 파라미터 타입에 따라 자동으로 변환하는 방식을 이용한다.   
+동일한 이름의 파라미터가 여러 개 전달되는 경우에는 배열 또는 ArrayList<> 등을 이용해서 처리가 가능하다. 스프링은 파라미터의 타입을 보고 객체를 생성하므로 파라미터의 타입은 List<>와 같이 인터페이스 타입이 아닌 실제적인 클래스 타입으로 지정한다.   
+스프링 MVC는 전달되는 파라미터가 동일한 이름으로 여러 개 존재하면 배열로 처리가 가능하므로 파라미터를 배열 타입으로 작성한다.
+
+@InitBinder
+----
+파라미터의 수집을 다른 용어로는 'binding(바인딩)'이라고 한다. 변환이 가능한 데이터는 자동으로 변환되지만 경우에 따라서는 파라미터를 변환해서 처리해야 하는 경우도 존재한다. 예를 들어, 화면에서 '2018-01-01'과 같이 문자열로 전달된 데이터를 java.util.Date 타입으로 변환하는 작업이 그러하다. 스프링 Controller에서는 파라미터를 바인딩할 때 자동으로 호출되는 @InitBinder를 이용해서 이러한 변환을 처리할 수 있다.   
+@InitBinder를 이용해서 날짜를 변환할 수도 있지만, 파라미터로 사용되는 인스턴스 변수에 @DateTimeFormat을 적용해도 변환이 가능하다.   
+
+Model이라는 데이터 전달자
+---
+Controller의 메서드를 작성할 때는 특별하게 Model이라는 타입을 파라미터로 지정할 수 있다. Model 객체는 JSP에 컨트롤러에서 생성된 데이터를 담아서 전달하는 역할을 하는 존재이다.   
+
+@ModelAttribute 어노테이션
+---
+스프링 MVC의 Controller는 기본적으로 Java Beans 규칙에 맞는 객체는 다시 화면으로 객체를 전달한다. 좁은 의미에서 Java Beans의 규칙은 단순히 생성자가 없거나 빈 생성자를 가져야 하며, getter/setter를 가진 클래스의 객체들은 의미한다. 파라미터로 사용된 SampleDTO의 경우는 Java Bean의 규칙에 맞기 때문에 자동으로 다시 화면까지 전달된다. 전달될 때에는 클래스명의 앞글자는 소문자로 처리된다.   
+@ModelAttribute는 강제로 전달받은 파라미터를 Model에 담아서 전달하도록 할 때 필요한 어노테이션이다. @ModelAttribute가 걸린 파라미터는 타입에 관계없이 무조건 Model에 담아서 전달되므로, 파라미터로 전달된 데이터를 다시 화면에서 사용해야 할 경우에 유용하게 사용된다.   
+기본 자료형에 @ModelAttribute를 적용할 경우에는 반드시 @ModelAttribute("page")와 같이 값(value)을 지정하도록 한다.   
+
+RedirectAttributes
+---
+RedirectAttributes는 조금 특별하게도 일회성으로 데이터를 전달하는 용도로 사용한다.   
+RedirectAttributes는 Model과 같이 파라미터로 선언해서 사용하고, addFlashAttribute(이름,값) 메소드를 이용해서 화면에 한 번만 사용하고 다음에는 사용되지 않는 데이터를 전달하기 위해서 사용한다.   
+
+Controller의 리턴 타입
+---
+Controller의 메소드가 사용할 수 있는 리턴 타입은 주로 다음과 같다.
+1. String: jsp를 이용하는 경우에는 jsp파일의 경로와 파일이름을 나타내기 위해서 사용한다.
+2. void: 호출하는 URL과 동일한 이름의 jsp를 의미한다.
+3. VO, DTO 타입: 주로 JSON 타입의 데이터를 만들어서 반환하는 용도로 사용한다.
+4. ResponseEntity 타입: response 할 때 Http 헤더 정보와 내용을 가공하는 용도로 사용한다.
+5. HttpHeaders: 응답에 내용 없이 Http 헤더 메세지만 전달하는 용도로 사용한다.   
+
+MIME 타입
+---
+MIME타입이란 클라이언트에게 전송되는 문서의 다양성을 알려주기 위한 메커니즘이다. 웹에서 파일의 확장자는 별 의미가 없다. 그러므로 각 문서와 함께 올바른 MIME 타입을 전송하도록, 서버가 정확히 설정하는 것이 중요하다. 브라우저들은 리소스를 내려받았을 때 해야할 기본 동작이 무엇인지를 결정하기 위해 대게 MIME 타입을 사용한다.   
+
+Controller의 Exception 처리
+---
+AOP: 핵심 로직은 아니지만 프로그램에서 필요한 '공통적인 관심사(cross-concern)는 분리'하자는 개념이다.   
+@ControllerAdvice는 해당 객체가 스프링의 컨트롤러에서 발생하는 예외를 처리하는 존재임을 명시하는 용도로 사용하고, @ExceptionHandler는 해당 메서드가 () 들어가는 예외 타입을 처리한다는 것을 의미한다.
+
+part1
 ====
 src/main/resources: 실행할 때 참고하는 기본 경로(주로 설정 파일들을 넣는다)   
 servlet-context.xml: 웹과 관련된 스프링 설정 파일   
