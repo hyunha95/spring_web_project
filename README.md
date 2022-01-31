@@ -1,4 +1,8 @@
-# spring_web_project
+# spring_web_project   
+part3
+===
+
+
 part2
 ===
 프로젝트 구동 시 관여하는 XML은 web.xml, root-context.xml, servlet-context.xml 파일이다. 이 파일들 중 web.xml은 Tomcat 구동과 관련된 설정이고, 나머지 두 파일은 스프링과 관련된 설정이다. 프로젝트의 구동은 web.xml에서 시작한다.   
