@@ -4,11 +4,11 @@ part3
 Mapper 인터페이스
 ---   
 SQL을 작성할 때는 반드시 ';'이 없도록 작성해야 한다.   
-Mapper XML 파일
+Mapper XML 파일   
 ---   
 XML을 작성할 때는 반드시 <mapper>의 namespace 속성값을 Mapper 인터페이스와 동일한 이름을 주는 것을 주의하고, <select> 태그의 id속성값은 메서드의 이름과 일치하게 작성한다. resultType 속성의 값은 select 쿼리의 결과를 특정 클래스의 객체로 만들기 위해서 설정한다. XML에 사용한 CDATA 부분은 XML에서 부등호를 사용하기 위해서 사용한다.   
 Mybatis는 내부적으로 JDBC의 PreparedStatement를 활용하고 필요한 파라미터를 처리하는'?'에 대한 치환은 '#{속성}'을 이용해서 처리한다.   
-inserSelectKey()는 @SelectKey라는 Mybatis의 어노테이션을 이용한다. @SelectKey는 주로 PK 값을 미리(before) SQL을 통해서 처리해 두고 특정한 이름으로 결과를 보관하는 방식이다.   
+inserSelectKey()는 @SelectKey라는 Mybatis의 어노테이션을 이용한다. @SelectKey는 주로 PK 값을 미리(before) SQL을 통해서 처리해 두고 특정한 이름으로 결과를 보관하는 방식이다.
 
 
 part2
@@ -123,18 +123,3 @@ Mapper
 --------------
 XML 매퍼를 이용할 때 신경 써야 하는 부분은 <mapper> 태그의 namespace 속성값이다. MyBatis는 Mapper 인터페이스와 XML을 인터페이스의 이름과 namespace 속성값을 가지고 판단한다.   
 <select> 태그의 id 속성값은 메서드의 이름과 동일하게 맞춰야 한다. <select> 태그의 경우 resultType 속성을 가지는데 이 값은 인터페이스에 선언된 메서드의 리턴 타입과 동일하게 작성한다.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
