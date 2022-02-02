@@ -9,6 +9,6 @@ TEMPORARY TABLESPACE TEMP;
 
 GRANT CONNECT, DBA TO BOOK_EX;
 
-
+select * from tbl_board order by bno desc;
 
 
