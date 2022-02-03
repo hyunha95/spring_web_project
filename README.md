@@ -22,9 +22,23 @@ Mapper XML 파일
 XML을 작성할 때는 반드시 \<mapper\>의 namespace 속성값을 Mapper인터페이스와 동일한 이름을 주는 것을 주의하고, \<select\> 태그의 id속성값은 메서드의 이름과 일치하게 작성한다. resultType 속성의 값은 select 쿼리의 결과를 특정 클래스의 객체로 만들기 위해서 설정한다. XML에 사용한 CDATA 부분은 XML에서 부등호를 사용하기 위해서 사용한다.   
 Mabatis는 내부적으로 JDBC의 PreparedStatement를 활용하고 필요한 파라미터를 처리하는 '?'에대한 치환은 '#{속성}'을 이용해서 처리한다.   
 insertSelectKey()는 @SelectKey라는 Mybatis의 어노테이션을 이용한다. @SelectKey는 주로 PK 값을 미리(before) SQL을 통해서 처리해 두고 특정한 이름으로 결과를 보관하는 방식이다.   
+@SelectKey를 이용하는 방식은 SQL을 한 번 더 실행하는 부담이 있기는 하지만 자동으로 추가되는 PK값을 확인해야 하는 상황에서는 유용하게 사용될 수 있습니다.   
+Mybatis는 Mapper 인터페이스의 리턴 타입에 맞게 select의 결과를 처리하기 때문에 tbl_board의 모든 컬럼은 BoardVO의 'bno, title, content, writer, regdate, updateDate'속성값으로 처리된다. Mybatis는 bno라는 칼럼이 존재하면 인스턴스의 'setBno()'를 호출하게 된다. Mybatis의 모든 파라미터와 리턴 타입의 처리는 get파라미터명(), set칼럼명()의 규칙으로 호출된다. 다만 #{속성}이 1개만 존재하는 경우에는 별도의 get파라미터명()을 사용하지 않고 처리된다.   
+   
+등록, 삭제, 수정과 같은 DML 작업은 '몇 건의 데이터가 삭제(혹은 수정)되었는지'를 반환할 수 있다.   
+BoardServiceImpl 클래스에 가장 중요한 부분은 @Service라는 어노테이션이다. @Service는 계층 구조상 주로 비즈니스 영역을 담당하는 객체임을 표시하기 위해 사용한다. 작성된 어노테이션은 패키지를 읽어 들이는 동안 처리된다. 스프링 4.3부터는 단일 파라미터를 받는 생성자의 경우에는 필요한 파라미터를 자동으로 주입할 수 있다. @AllArgsConstructor는 모든 파라미터를 이용하는 생성자를 만들기 때문에 실제 코드는 BoardMapper를 주입받는 생성자가 만들어지게 된다. 비즈니스 계층의 인터페이스와 구현 클래스가 작성되었다면, 이를 스프링의 빈으로 인식하기 위해서 root-context.xml에 @Service 어노테이션이 있는 패키지를 스캔(조사)하도록 추가해야 한다.   
+<context:component-scan base-package="패키지명">  
 
-  
-  
+프레젠테이션(웹) 계층의 CRUD 구현
+---   
+WAS를 실행하지 않고 Controller를 테스트할 수 있는 방법을 알아야 한다.   
+BoardController가 속한 org.zerock.controller패키지는 servlet-context.xml에 기본으로 설정되어 있으므로 별도의 설정이 필요하지 않다.   
+BoardController 테스트는 스프링의 테스트 기능을 통해서 확인해 볼 수 있다. 테스트 코드는 기존과 좀 다르게 진행되는데 그 이유는 웹을 개발할 때 매번 URL을 테스트하기 위해서 Tomcat과 같은 WAS를 실행하는 불편한 단계를 생략하기 위해서이다. 스프링의 테스트 기능을 활용하면 개발 당시에 Tomcat(WAS)를 실행하지 않고도 스프링과 웹 URL을 테스트할 수 있다.   
+https://github.com/hyunha95/spring_web_project/blob/3f9650cd20197ba6db09cd8c53665ccebe1e9710/ex02/src/test/java/org/zerock/controller/BoardControllerTests.java   
+테스트 클래스의 선언부에는 @WebAppConfiguration 어노테이션을 적용한다. @WebAppConfiguration은 Servlet의 ServletContext를 이용하기 위해서인데, 스프링에서는 WebApplicationConetext라는 존재를 이용하기 위해서이다.   
+@Before가 적용된 메소드는 모든 테스트 전에 매번 실행되는 메서드가 된다.   
+MockMvc는 말 그대로 '가짜Mvc'라고 생각하면 된다. 가짜로 URL과 파라미터 등을 브라우저에서 사용하는 것처럼 만들어서 Controller를 실행해 볼 수 있다.   
+
 part2
 ===
 프로젝트 구동 시 관여하는 XML은 web.xml, root-context.xml, servlet-context.xml 파일이다. 이 파일들 중 web.xml은 Tomcat 구동과 관련된 설정이고, 나머지 두 파일은 스프링과 관련된 설정이다. 프로젝트의 구동은 web.xml에서 시작한다.   
