@@ -3,7 +3,26 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@include file="../includes/header.jsp" %>
-
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	var operForm = $("#operForm");
+	
+	$("button[data-oper='modify']").on("click", function(e) {
+		
+		operForm.attr("action", "/board/modify").submit();
+		
+	});
+	
+	$("button[data-oper='list']").on("click", function(e) {
+		
+		operForm.find("#bno").remove();
+		operForm.attr("action", "/board/list");
+		operForm.submit();
+		
+	});
+});
+</script>
 <div class="row">
 	<div class="col-lg-12">
 		<h1 class="page-header">Board Read Page</h1>
@@ -40,12 +59,17 @@
 				</div>
 				
 				<button data-oper='modify' 
-				class="btn btn-default"
-				onclick="location.href='/board/modify?bno=<c:out value="${board.bno}"/>'">Modify</button>
+				class="btn btn-default">Modify</button>
 				<button data-oper='list' 
-				class="btn btn-info"
-				onclick="location.href='/board/list'">List</button>
+				class="btn btn-info">List</button>
 				
+				<form action="/board/modify" id="operForm" method="get">
+					<input type="hidden" name="bno" id="bno" value='<c:out value="${board.bno}"/>' />
+					<input type="hidden" name="pageNum" value="<c:out value='${cri.pageNum }'/>" />
+					<input type="hidden" name="amout" value='<c:out value="${cri.amount}"/>' />
+					<input type="hidden" name="keyword" value='<c:out value="${cri.keyword}"/>' />
+					<input type="hidden" name="type" value='<c:out value="${cri.type}"/>' />
+				</form>
 			</div>
 			<!-- end panel-body -->
 		</div>
