@@ -3,9 +3,19 @@
 part3
 ===
 
+스프링 MVC프로젝트의 기본 구성
+---
+일반적으로 웹 프로젝트는 3-tier(티어) 방식으로 구성한다.   
+Presentation, Business, Persistence tier   
+Presentation Tier(화면 계층)는 화면에 보여주는 기술을 사용하는 영역이다.   
+Business Tier(비즈니스 계층)는 순수한 비즈니스 로직을 담고 있는 영역이다.   
+Persistence Tier(영속 계층 옥은 데이터 계층)는 데이터를 어떤 방식으로 보관하고, 사용하는가에 대한 설계가 들어가는 계층이다.   
+프로젝트를 3-tier로 구성하는 가장 일반적인 설명은 '유지보수'에 대한 필요성 때문이다.
+
 Mapper 인터페이스
 ---
 SQL을 작성할 때는 반드시 ';'이 없도록 작성해야 한다.   
+SQL 뒤에 'where bno > 0' 과 같은 조건은 테이블을 검색하는데 bno라는 컬럼 조건을 주어서 Primary key(이하 PK)를 이용하도록 유도하는 조건이다.   
 
 Mapper XML 파일
 ---
