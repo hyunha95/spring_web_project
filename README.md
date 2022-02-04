@@ -122,7 +122,46 @@ select문을 작성할 때 힌트는 잘못 작성되어도 실행할 때는 무
 INDEX_ASC, INDESC_DESC 힌트
 ---
 흔히 목록 페이지에서 가장 많이 사용하는 힌트는 인덱스와 관련된 'INDEX_ASC', INDEX_DESC'힌트이다. ASC/DESC에서 알 수 있듯이 인덱스를 순서대로 이용할 것인지 역순으로 이용할 것인지를 지정하는 것이다. INDEX_ASC/DESC 힌트는 주로 'order by'를 위해서 사용한다고 생각하면 된다. 인덱스 자체가 정렬을 해 둔 상태이므로 이를 통해서 SORT 과정을 생략하기 위한 용도이다.   
-INDEX_ASC/DESC 힌트는 테이블 이름과 인덱스 이름을 같이 파라미터로 사용한다. INDEX_ASC/DESC를 이용하는 경우에는 동일한 조건의 order by 구문을 작성하지 않아도 된다.
+INDEX_ASC/DESC 힌트는 테이블 이름과 인덱스 이름을 같이 파라미터로 사용한다. INDEX_ASC/DESC를 이용하는 경우에는 동일한 조건의 order by 구문을 작성하지 않아도 된다.   
+
+ROWNUM과 인라인뷰
+---
+ROWNUM은 쉽게 생각해서 SQL이 실행된 결과에 넘버링을 해준다고 생각하면 된다. ROWNUM이라는 것은 데이터를 가져올 때 적용되는 것이고, 이 후에 정렬되는 과정에서는 ROWNUM이 변경되지 않는다는 것이다. SQL을 작성할 때 ROWNUM 조건은 반드시 1이 포함되어야 한다.   
+인라인뷰는 논리적으로 어떤 결과를 구하는 SELECT문이 있고, 그 결과를 다시 대상으로 삼아서 SELECT를 하는 것이다.   
+1. 필요한 순서로 정렬된 데이터에 ROWNUM을 붙인다.
+2. 처음부터 해당 페이지의 데이터를 'ROWNUM <= 30'과 같은 조건을 이용해서 구한다.
+3. 구해놓은 데이터를 하나의 테이블처럼 간주하고 인라인뷰로 처리한다.
+4. 인라인뷰에서 필요한 데이터만을 남긴다.
+
+Mybatis와 스프링에서 페이징 처리
+---
+페이징 처리를 위해서는 SQL을 실행할 때 몇 가지 파라미터가 필요하다는 점이다. 페이징 처리를 위해서는 필요한 파라미터는 1) 페이지 번호(pageNum), 2) 한 페이지당 몇 개의 데이터(amount)를 보여줄 것인지가 결정되어야만 한다.   
+작성된 BoardMapper.xml에서는 XML의 CDATA처리가 들어간다. CDATA 섹션은 XML에서 사용할 수 없는 부등호를 사용하기 위함인데, XML을 사용할 경우에는 '\<, \>'는 태그로 인식하는데, 이로 인해 생기는 문제를 막기 위함이다.(&lt; 나 &gt;와 같은 특수 문자를 사용할 수도 있긴 하다.)   
+
+페이징 처리할 때 필요한 정보
+---
+1. 현재 페이지 번호(page)
+2. 이전과 다음으로 이동 가능한 링크의 표시 여부(prev, next)
+3. 화면에서 보여지는 페이지의 시작 번호와 끝 번호(startPage, endPage)   
+``` java
+페이징의 끝 번호(endPage) 계산
+this.endPage = (int)(Math.ceil(페이지번호 / 10.0)) * 10;
+
+페이징의 시작 번호
+this.startPage = this.endPage - 9;
+
+total을 통한 endPage의 재계산
+realEnd = (int) (Math.ceil((total * 1.0) / amount));
+if(realEnd < this.endPage) {
+   this.endPage = realEnd;
+}
+
+이전(prev) 계산
+this.prev = this.startPage > 1;
+
+다음(next) 계산
+this.next = this.endPage < realEnd;
+```
 
 
 
