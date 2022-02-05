@@ -163,6 +163,15 @@ this.prev = this.startPage > 1;
 this.next = this.endPage < realEnd;
 ```
 
+Mybatis의 동적 SQL
+---
+- if: test라는 속성과 함께 특정한 조건이 true가 되었을 때 포함된 SQL을 사용하고자 할 때 작성한다. If 안에 들어가는 표현식(expression) OGNL 표현식이라는 것을 이용한다.
+- choose(when, otherwise): if와 달리 choose는 여러 상황들 중 하나의 상황에서만 동작한다.
+- trim(where, set): trim, where, set은 단독으로 사용되지 않고 \<if\>, \<choose\>와 같은 태그들을 내포하여 SQL들을 연결해 주고, 앞 뒤에 필요한 구문들(AND, OR, WHERE 등)을 추가하거나 생략하는 역할을 한다.    
+\<where\>의 경우 태그 안쪽에서 SQL이 생성될 때는 WHERE 구문이 붙고, 그렇지 않는 경우에는 생성되지 않는다.
+
+- foreach
+
 
 
 
