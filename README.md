@@ -168,10 +168,40 @@ Mybatis의 동적 SQL
 - if: test라는 속성과 함께 특정한 조건이 true가 되었을 때 포함된 SQL을 사용하고자 할 때 작성한다. If 안에 들어가는 표현식(expression) OGNL 표현식이라는 것을 이용한다.
 - choose(when, otherwise): if와 달리 choose는 여러 상황들 중 하나의 상황에서만 동작한다.
 - trim(where, set): trim, where, set은 단독으로 사용되지 않고 \<if\>, \<choose\>와 같은 태그들을 내포하여 SQL들을 연결해 주고, 앞 뒤에 필요한 구문들(AND, OR, WHERE 등)을 추가하거나 생략하는 역할을 한다.    
-\<where\>의 경우 태그 안쪽에서 SQL이 생성될 때는 WHERE 구문이 붙고, 그렇지 않는 경우에는 생성되지 않는다.
+\<where\>의 경우 태그 안쪽에서 SQL이 생성될 때는 WHERE 구문이 붙고, 그렇지 않는 경우에는 생성되지 않는다.   
+\<trim\>은 하위에서 만들어지는 SQL문을 조사하여 앞 쪽에 추가적인 SQL을 넣을 수 있다.
+- foreach: foreach는 List, 배열, 맵 등을 이용해서 루프를 처리할 수 있다. 주로 IN 조건에서 많이 사용하지만, 경우에 따라서는 복잡한 WHERE조건을 만들때에도 사용할 수 있다. foreach를 배열이나 List를 이용하는 경우에는 item 속성만을 이용하면 되고, Map의 형태로 key와 value를 이용해야 할 때는 index와 item 속성을 둘 다 이용한다.
+```xml
+Map<String, String> map = new HashMap<>();
+map.put("T", "TTTT");
+map.put("C", "CCCC");
+   
+<foreach item="val" index="key" collection="map"></foreach>
+```
+Mybatis는 \<sql\>이라는 태그를 이용해서 SQL의 일부를 별도로 보관하고, 필요한 경우에 include시키는 형태로 사용할 수 있다. \<sql\> 태그는 id라는 속성을 이용해서 필요한 경우에 동일한 SQL의 일부를 재사용할 수 있게 한다.
+```xml
+<sql id="criteria"></sql>
+<include refid="criteria"></include>
+```
 
-- foreach
-
+화면에서 검색 조건 처리
+---
+1. 페이지 번호가 파라미터로 유지되었던 것처럼 검색 조건과 키워드 역시 항상 화면 이동 시 같이 전송되어야 한다.
+2. 화면에서 검색 버튼을 클릭하면 새로 검색을 한다는 의미이므로 1페이지로 이동한다.
+3. 한글의 경우 GET 방식으로 이동하는 경우 문제가 생길 수 있으므로 주의해야 한다.   
+항상 테스트는 영문과 한글을 모두 테스트해야 한다.   
+   
+UriComponentsBuilder를 이용하는 링크 생성   
+org.springframework.web.util.UriComponentsBuilder는 여러 개의 파라미터들을 연결해서 URL의 형태로 만들어주는 기능을 가지고 있다. URL을 만들어주면 리다이렉트 하거나, \<form\>태그를 사용하는 상황을 많이 줄여줄 수 있다(가장 편리한 점은 한글 처리에 신경 쓰기 않아도 된다는 점이다.). UriComponentsBuilder로 생성된 URL은 화면에서도 유용하게 사용될 수 있는데, 주로 javaScript를 사용할 수 없는 상황에서 링크를 처리해야 하는 상황에서 사용된다.
+``` java
+UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
+   .queryParam("pageNum", this.pageNum")
+   .queryParam("amount", this.getAmount())
+   .queryParam("type", this.getType())
+   .queryParam("keyword", this.getKeyword());
+   
+return builder.toUriString();
+```
 
 
 
