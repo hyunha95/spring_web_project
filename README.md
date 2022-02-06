@@ -1,5 +1,46 @@
 # spring_web_project   
 
+part4
+===
+Note
+---
+흔히 URL(Uniform Resource Locator)과 URI(Uniform Resource Identifier)를 같은 의미로 사용하는 경우가 많다. 엄밀하게는 URL은 URI의 하위 개념이기 때문에 혼용해도 무방하다. URI는 '자원의 식별자'라는 의미로 사용된다.   
+URL은 '이 곳에 가면 당신이 원하는 것을 찾을 수 있습니다.'와 같은 상징적인 의미가 좀 더 강하다면, URI는 '당신이 원하는 곳의 주소는 여기입니다.'와 같이 좀 더 현실적이고 구체적인 의미가 있다. URI의 'I'는 마치 데이터베이스의 PK와 같은 의미로 사용된다고 생각할 수 있다.   
+JSON은 'JavaScript Object Notation'의 약어로 구조가 있는 데이터를 '{ }'로 묶고 '키'와 '값'으로 구성하는 경량의 데이터 포맷이다.   
+
+Rest 방식으로 전환
+---
+REST 'Representational State Transfer'의 약어로 하나의 URI는 하나의 고유한 리소스(Resource)를 대표하도록 설계된다는 개념에 전송방식을 결합해서 원하는 작업을 지정한다.   
+스프링은 @RequestMapping이나 @ResponseBody와 같이 REST 방식의 데이터 처리를 위한 여러 종류의 어노테이션과 기능이 있다.   
+- @RestController: Controller가 REST 방식을 처리하기 위한 것임을 명시한다.
+- @ResponseBody: 일반적인 JSP와 같은 뷰로 전달되는 게 아니라 데이터 자체를 전달하기 위한 용도
+- @PathVariable: URL 경로에 있는 값을 파라미터로 추출하려고 할 때 사용
+- @CrossOrigin: Ajax의 크로스 도메인 문제를 해결해주는 어노테이션
+- @RequestBody: JSON 데이터를 원하는 타입으로 바인딩 처리
+
+@RestController
+---
+REST 방식에서 가장 먼저 기억해야 하는 점은 서버에서 전송하는 것이 순수한 데이터라는 점이다. 기존의 Controller에서 Model에 데이터를 담아서 JSP 등과 같은 뷰(View)로 전달하는 방식이 아니므로 기존의 Controller와는 조금 다르게 동작한다.   
+스프링 4에서부터는 @Controller 외에 @RestController라는 어노테이션을 추가해서 해당 Controller의 모든 메서드의 리턴 타입을 기존과 다르게 처리한다는 것을 명시한다. @RestController 이전에는 @Controller와 메서드 선언부에 @ResponseBody를 이용해서 동일한 결과를 만들 수 있었다. @RestController는 메서드의 리턴 타입으로 사용자가 정의한 클래스 타입을 사용할 수 있고, 이를 JSON이나 XML로 자동으로 처리할 수 있다.   
+   
+jackson-databind 라이브러리는 나중에 브라우저에 객체를 JSON이라는 포맷의 문자열로 변환시켜 전송할 때 필요하다.   
+XML의 처리는 jackson-dataformat-xml 라이브러리를 이용한다.   
+직접 Java 인스턴스를 JSON 타입의 문자열로 변환해야 하는 일들도 있으므로 gson 라이브러리도 추가한다.   
+
+@RestController의 반환 타입
+---
+@RestController는 JSP와 달리 순수한 데이터를 반환하는 형태이므로 다양한 포맷의 데이터를 전송할 수 있다. 주로 많이 사용하는 형태는 일반 문자열이나 JSON, XML 등을 사용한다.   
+기존의 @Controller는 문자열을 반환하는 경우에는 JSP 파일의 이름으로 처리하지만, @RestController의 경우에는 순수한 데이터가 된다. @GetMapping에 사용된 produces 속성은 해당 메서드가 생산하는 MIME 타입을 의미한다. 문자열로 직접 지정할 수도 있고, 메서드 내의 MediaType이라는 클래스를 이용할 수도 있다. @GetMapping이나 @RequestMapping의 produces 속성은 반드시 지정해야 하는 것은 아니므로 생략하는 것도 가능하다.   
+Map을 이용하는 경우에는 '키(key)'에 속하는 데이터는 XML로 변환되는 경우에 태그의 이름이 되기 때문에 문자열을 지정한다.   
+
+ResponseEntity 타입
+---
+REST 방식으로 호출하는 경우는 화면 자제가 아니라 데이터 자체를 전송하는 방식으로 처리되기 때문에 데이터를 요청한 쪽에서는 정상적인 데이터인지 비정상적인 데이터인지를 구분할 수 있는 확실한 방법을 제공해야만 한다.  
+ResponseEntity는 데이터와 함께 HTTP 헤더의 상태 메시지 등을 같이 전달하는 용도로 사용한다. HTTP의 상태 코드와 에러 메시지 등을 함께 데이터를 전달할 수 있기 때문에 받는 입장에서는 확실하게 결과를 알 수 있다.   
+
+
+
+
 part3
 ===
 
