@@ -78,10 +78,10 @@ public class BoardController {
 		}
 		
 		// cri.getListLink()로 대체
-//		rttr.addFlashAttribute("pageNum", cri.getPageNum());
-//		rttr.addFlashAttribute("amount", cri.getAmount());
-//		rttr.addFlashAttribute("type", cri.getType());
-//		rttr.addFlashAttribute("keyword", cri.getKeyword());
+		rttr.addFlashAttribute("pageNum", cri.getPageNum());
+		rttr.addFlashAttribute("amount", cri.getAmount());
+		rttr.addFlashAttribute("type", cri.getType());
+		rttr.addFlashAttribute("keyword", cri.getKeyword());
 		
 		return "redirect:/board/list" + cri.getListLink();
 	}
