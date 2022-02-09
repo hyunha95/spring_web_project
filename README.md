@@ -38,8 +38,26 @@ ResponseEntity 타입
 REST 방식으로 호출하는 경우는 화면 자제가 아니라 데이터 자체를 전송하는 방식으로 처리되기 때문에 데이터를 요청한 쪽에서는 정상적인 데이터인지 비정상적인 데이터인지를 구분할 수 있는 확실한 방법을 제공해야만 한다.  
 ResponseEntity는 데이터와 함께 HTTP 헤더의 상태 메시지 등을 같이 전달하는 용도로 사용한다. HTTP의 상태 코드와 에러 메시지 등을 함께 데이터를 전달할 수 있기 때문에 받는 입장에서는 확실하게 결과를 알 수 있다.   
 
+@RestController에서 파라미터
+---
+@PathVariable: 일반 컨트롤러에서도 사용이 가능하지만 REST 방식에서 자주 사용된다. URL 경로의 일부를 파라미터로 사용할 때 이용.   
+@RequestBody: JSON 데이터를 원하는 타입의 객체로 변환해야 하는 경우에 주로 사용   
+``` java
+@GetMapping("/produc/{cat}/{pid}")
+public String[] getPath(
+   @PathVariable("cat") String cat,
+   @PathVariable("pid") Integer pid){}
+```
+@PathVariable을 적용하고 싶은 경우에는 '{ }'를 이용해서 변수명을 지정하고, @PathVariable을 이용해서 지정된 이름의 변숫값을 얻을 수 있다. 값을 얻을 때에는 int, double과 같은 기본 자료형은 사용할 수 없다.   
+@RequestBody: @RequestBody는 전달된 요청(request)의 내용(body)을 이용해서 해당 파라미터의 타입으로 변환을 요구한다. 내부적으로 HttpMessageConverter 타입의 객체들을 이용해서 다양한 포맷의 입력 데이터를 변환할 수 있다. 대부분의 경우에는 JSON 데이터를 서버에 보내서 원하는 타입의 객체로 변환하는 용도로 사용되지만, 경우에 따라서는 원하는 포맷의 데이터를 보내고, 이를 해석해서 원하는 타입으로 사용하기도 한다.(JSON 문자열 -> Ticket 타입의 객체)   
 
-
+다양한 전송방식
+---
+REST 방식의 데이터 교환에서 가장 특이한 점은 기존의 GET/POST 외에 다양한 방식으로 데이터를 전달한다는 점이다.   
+Create -> POST   
+Read -> GET   
+Update -> PUT   
+Delete -> DELETE   
 
 part3
 ===
