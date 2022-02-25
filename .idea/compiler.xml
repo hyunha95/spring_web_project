@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="controller (3)" />
+        <module name="controller (2)" />
+        <module name="controller" />
+        <module name="controller (5)" />
+        <module name="controller (4)" />
+        <module name="controller (1)" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="controller" target="11" />
+      <module name="controller (1)" target="1.8" />
+      <module name="controller (2)" target="1.8" />
+      <module name="controller (3)" target="1.8" />
+      <module name="controller (4)" target="11" />
+      <module name="controller (5)" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="controller" options="-Xlint:all" />
+      <module name="controller (1)" options="-Xlint:all" />
+      <module name="controller (2)" options="-Xlint:all" />
+      <module name="controller (3)" options="-Xlint:all" />
+      <module name="controller (4)" options="-Xlint:all" />
+      <module name="controller (5)" options="-Xlint:all" />
+    </option>
+  </component>
+</project>
