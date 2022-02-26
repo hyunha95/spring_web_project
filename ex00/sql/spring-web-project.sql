@@ -9,6 +9,25 @@ TEMPORARY TABLESPACE TEMP;
 
 GRANT CONNECT, DBA TO BOOK_EX;
 
+
+--=============================
+-- 포트번호 변경
+--=============================
+select dbms_xdb.gethttpport() from dual;
+exec dbms_xdb.sethttpport(9090);
+
+
+
+
+
+
+
+
+
+
+
+
+
 --=============================
 -- 테이블 생성
 --=============================
