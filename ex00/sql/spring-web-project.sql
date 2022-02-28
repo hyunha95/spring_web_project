@@ -17,17 +17,6 @@ select dbms_xdb.gethttpport() from dual;
 exec dbms_xdb.sethttpport(9090);
 
 
-
-
-
-
-
-
-
-
-
-
-
 --=============================
 -- 테이블 생성
 --=============================
@@ -44,6 +33,14 @@ create table tbl_board (
 
 alter table tbl_board add constraint pk_borad
 primary key (bno);
+
+insert into tbl_board (bno, title, content, writer)
+values (seq_board.nextval, '테스트 제목', '테스트 내용', 'user00');
+commit;
+select * from tbl_board;
+
+
+
 
 
 
