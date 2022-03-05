@@ -18,10 +18,10 @@ public class BoardMapperTests {
 	@Setter(onMethod_ = @Autowired)
 	private BoardMapper mapper;
 	
-//	@Test
-//	public void testGetList() {
-//		mapper.getList().forEach(board -> log.info(board));
-//	}
+	@Test
+	public void testGetList() {
+		mapper.getList().forEach(board -> log.info(board));
+	}
 //	
 //	@Test
 //	public void testInsert() {
@@ -47,17 +47,17 @@ public class BoardMapperTests {
 //		log.info("DELETE COUNT: " + mapper.delete(21L));
 //	}
 	
-	@Test
-	public void testUpdate() {
-		BoardVO board = new BoardVO();
-		board.setBno(5L);
-		board.setTitle("수정된 제목");
-		board.setContent("수정된 내용");
-		board.setWriter("user00");
-		
-		int count = mapper.update(board);
-		log.info("UPDATE COUNT: " + count);
-	}
+//	@Test
+//	public void testUpdate() {
+//		BoardVO board = new BoardVO();
+//		board.setBno(5L);
+//		board.setTitle("수정된 제목");
+//		board.setContent("수정된 내용");
+//		board.setWriter("user00");
+//
+//		int count = mapper.update(board);
+//		log.info("UPDATE COUNT: " + count);
+//	}
 }
 
 
