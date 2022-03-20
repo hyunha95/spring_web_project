@@ -123,6 +123,7 @@ where
 
 select * from tbl_board order by bno desc;
 
+-- 댓글 처리를 위한 테이블
 create table tbl_reply (
     rno number(10,0),
     bno number(10,0) not null,
@@ -131,6 +132,14 @@ create table tbl_reply (
     replyDate date default sysdate,
     updateDate date default sysdate
 );
+
+create sequence seq_reply;
+
+alter table tbl_reply add constraint pk_reply primary key(rno);
+alter table tbl_reply add constraint fk_reply_board foreign key(bno) references tbl_board(bno);
+
+select * from tbl_board where rownum < 10 order by bno desc;
+select * from tbl_reply order by rno desc;
 
 
 
