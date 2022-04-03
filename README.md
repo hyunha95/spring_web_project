@@ -72,6 +72,28 @@ Read -> GET
 Update -> PUT   
 Delete -> DELETE   
 
+@Param어노테이션과 댓글 목록
+---   
+Mybatis는 두 개 이상의 데이터를 파라미터로 전달하기 위해서는 1) 별도의 객체로 구성하거나, 2)Map을 이용하는 방식, 3) @Param을 이용해서 이름을 사용하는 방식이 있다. @Param의 속성값은 MyBatis에서 SQL을 이용할 때 '#{}'의 이름으로 사용이 가능하다.   
+``` java
+public List<ReplyVO> getListWithPaging(@Param("cri") Criteria cri, @Param("bno") Long bno);
+```
+XML에서 '#{bno}'가 @Param("bno")와 매칭되어서 사용되는 점에 주목해야 한다.   
+   
+REST 방식으로 동작하는 URL을 설계할 때는 PK를 기준으로 작성하는 것이 좋다. PK만으로 조회, 수정, 삭제가 가능하기 때문이다. 다만 댓글의 목록은 PK를 사용할 수 없기 때문에 파라미터로 필요한 게시물의 번호(bno)와 페이지 번호(page) 정보들을 URL에서 표현하는 방식을 사용한다.   
+REST방식으로 처리할 때 주의해야 하는 점은 브라우저나 외부에서 서버를 호출할 때 데이터의 포맷과 서버에서 보내주는 데이터의 타입을 명확히 설계해야 하는 것이다.   
+   
+JavaScript의 모듈화
+---   
+JavaScript에서 가장 많이 사용하는 패턴 중 하나는 모듈 패턴이다. 모듈 패턴은 쉽게 말해서 관련 있는 함수들을 하나의 모듈처럼 묶음으로 구성하는 것을 의미한다. JavaScript의 클로저를 이용하는 가장 대표적인 방법이다.   
+모듈 패턴은 쉽게 말해서 Java의 클래스처럼 JavaScript를 이용해서 메서드를 가지는 객체를 구성한다. 모듈 패턴은 JavaScript의 즉시 실행함수와 '{}'를 이용해서 객체를 구성한다. JavaScript의 즉시 실행함수는 () 안에 함수를 선언하고 바깥쪽에서 실행해 버린다. 즉시 실행함수는 함수의 실행 결과가 바깥쪽에 선언된 변수에 할당된다.   
+``` javascript
+var replyService = (function(){
+   return {name:"AAAA"};
+})();
+```   
+위의 코드에서는 replyService라는 변수에 name이라는 속성에 'AAAA'라는 속성값을 가진 객체가 할당된다.
+
 part3
 ===
 
