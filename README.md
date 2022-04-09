@@ -30,6 +30,18 @@ JoinPoint는 Target이 가진 여러 메서드라고 보면 된다(엄밀하게 
 Pointcut은 관심사와 비즈니스 로직이 결합되는 지점을 결정하는 것이다.   
    
 관심사(concern)는 Aspect와 Advice라는 용어로 표현되어 있다. Aspect는 조금 추상적인 개념을 의미한다. Aspect는 관심사 자체를 의미하는 추상명사라고 볼 수 있고, Advice는 Aspect를 구현한 코드이다. Advice는 실제 걱정거리를 분리해 놓은 코드를 의미한다. Advice는 그 동작 위치에 따라 다음과 같이 구분된다.   
+Before Advice: Target의 JoinPoint를 호출하기 전에 실행되는 코드이다. 코드의 실행 자체에는 관여할 수 없다.   
+After Returning Advice: 모든 실행이 정상적으로 이루어진 후에 동작하는 코드이다.   
+After Throwing Advice: 예외가 발생한 뒤에 동작하는 코드이다.   
+After Advice: 정상적으로 실행되거나 예외가 발생했을 때 구분 없이 실행되는 코드이다.   
+Around Advice: 메서드의 실행 자체를 제어할 수 있는 가장 강력한 코드이다. 직접 대상 메서드를 호출하고 결과나 예외를 처리할 수 있다.   
+   
+Pointcut은 Advice를 어떤 JoinPoint에 결합할 것인지를 결정하는 설정이다. AOP에서 Target은 결과적으로 Pointcut에 의해서 자신에게는 없는 기능들을 가지게 된다. Pointcut은 다양한 형태로 선언해서 사용할 수 있느데 주로 사용되는 설정은 다음과 같다.   
+execution(@execution): 메서드를 기준으로 Pointcut을 설정한다.   
+within(@within): 특정한 타입(클래스)을 기준으로 Pointcut을 설정한다.   
+this: 주어진 인터페이스를 구현한 객체를 대상으로 Pointcut을 설정한다.   
+args(@args): 특정한 파라미터를 가지는 대상들만을 Pointcut으로 설정한다.   
+@annotation: 특정한 어노테이션이 적용된 대상들만을 Pointcut으로 설정한다. 
 
 part4
 ===
