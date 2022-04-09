@@ -36,6 +36,21 @@ Pointcut은 관심사와 비즈니스 로직이 결합되는 지점을 결정하
 - After Advice: 정상적으로 실행되거나 예외가 발생했을 때 구분 없이 실행되는 코드이다.   
 - Around Advice: 메서드의 실행 자체를 제어할 수 있는 가장 강력한 코드이다. 직접 대상 메서드를 호출하고 결과나 예외를 처리할 수 있다.   
    
+Advice를 정의하는 어노테이션   
+- @Before("pointcut")
+- @After("pointcut")
+- @Around("pointcut")
+- @AfterReturning(pointcut="", returning="")
+- @AfterThrowing(pointcut="", throwing="")   
+   
+@Pointcut 어노테이션 표현식   
+Pointcut표현식 / execution(* com.kh.biz.\*Impl.\*(..))   
+\* : 리턴타입   
+com.kh.biz : 패키지 경로   
+.\*Impl. : 클래스명   
+\*(..) : 메소드명 및 매개변수   
+- 예시의 표현식은 리턴 타입과 매개변수를 무시하고, com.kh.biz.패키지로 시작하는 클래스 중 이름이 Impl로 끝나는 클래스의 모든 메소드를 뜻한다.
+   
 Pointcut은 Advice를 어떤 JoinPoint에 결합할 것인지를 결정하는 설정이다. AOP에서 Target은 결과적으로 Pointcut에 의해서 자신에게는 없는 기능들을 가지게 된다. Pointcut은 다양한 형태로 선언해서 사용할 수 있느데 주로 사용되는 설정은 다음과 같다.   
 - execution(@execution): 메서드를 기준으로 Pointcut을 설정한다.   
 - within(@within): 특정한 타입(클래스)을 기준으로 Pointcut을 설정한다.   
@@ -72,6 +87,28 @@ public void logBeforeWithParam(String str1, String str2){
 logBeforeWithParam()에서는 'execution'으로 시작하는 Pointcut 설정에 doAdd()메서드를 명시하고, 파라미터의 타입을 지정했다. 뒤쪽의 '&& args(...' 부분에는 변수명을 지정하는데, 이 2종류의 정보를 이용해서 logBeforeWithParam() 메서드의 파라미터를 설정하게 된다.   
 '&& args'를 이용하는 설정은 간단히 파라미터를 찾아서 기록할 때에는 유용하지만 파라미터가 다른 여러 종류의 메서드에 적용하는 데에는 간단하지 않다는 단점이 있다. 이에 대한 문제는 @Around와 ProceedingJoinPoint를 이용해서 해결할 수 있다.   
    
+ProceedingJoinPoint는 AOP의 대상이 되는 Target이나 파라미터 등을 파악할 뿐만 아니라, 직접 실행을 결정할 수도 있다. @Before 등과 달리 @Around가 적용되는 메서드의 경우에는 리턴 타입이 void가 아닌 타입으로 설정하고, 메서드의 실행 결과 역시 직접 반환하는 형태로 작성해야 한다.   
+@Around와 @Before에 같은 pointcut이 설정되어 있다면 @Around가 먼저 동작하고 @Before 등이 실행된다.
+   
+Spring AOP의 특징
+---
+1. Spring은 프록시(Proxy) 기반 AOP를 지원한다.   
+Spring은 대상 객체(Target Object)에 대한 프록시를 만들어 제공하며, 타겟을 감싸는 프록시는 서버 Runtime 시에 생성된다. 이렇게 생성된 프록시는 대상 객체를 호출할 때 먼저 호출되어 어드바이스의 로직을 처리 후 대상 객체를 호출한다.   
+Proxy: 대상 객체를 직접 접근하지 못하게 '대리인'으로써 요청을 대신 받는 기술
+2. Proxy는 대상 객체의 호출을 가로챈다.(Intercept)   
+Proxy는 그 역할에 따라 타켓 객체에 대한 호출을 가로챈 다음 어드바이스의 부가기능 로직을 수행하고 난 후에 타겟의 핵심기능 로직을 호출하거나 (전처리 어드바이스) 타겟의 핵심기능 로직 메서드를 호출한 후에 부가기능(어드바이스)을 수행한다.(후처리 어드바이스)   
+3. Spring AOP는 메소드 조인 포인트만 지원한다.   
+Spring은 동적 프록시를 기반으로 AOP를 구현하기 때문에 메소드 조인 포인트만 지원한다. 즉, 핵심기능(대상 객체)의 메소드가 호출되는 런타임 시점에만 부가기능(어드바이스)을 적용할 수 있다.   
+하지만, AspectJ 같은 고급 AOP 프레임워크를 사용하면 객체의 생성, 필드값의 조회와 조작, static 메서드 호출 및 초기화 등의 다양한 작업에 부가기능을 적용할 수 있다.   
+   
+JoinPoint Interface 메소드
+---
+- getArgs(): 메소드의 매개 변수를 반환한다.
+- getThis(): 현재 사용 중인 프록시 객체를 반환한다.
+- getTarget(): 대상 객체를 반환한다.
+- getSignature(): 대상 객체 메소드의 설명(메소드 명, 리턴 타입 등)을 반환한다.
+- toString(): 대상 객체 메소드의 정보를 출력한다.
+	
 
 
 part4
