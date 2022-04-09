@@ -41,7 +41,38 @@ execution(@execution): 메서드를 기준으로 Pointcut을 설정한다.
 within(@within): 특정한 타입(클래스)을 기준으로 Pointcut을 설정한다.   
 this: 주어진 인터페이스를 구현한 객체를 대상으로 Pointcut을 설정한다.   
 args(@args): 특정한 파라미터를 가지는 대상들만을 Pointcut으로 설정한다.   
-@annotation: 특정한 어노테이션이 적용된 대상들만을 Pointcut으로 설정한다. 
+@annotation: 특정한 어노테이션이 적용된 대상들만을 Pointcut으로 설정한다.   
+   
+AOP 설정과 관련해서 가장 중요한 라이브러리는 AspectJ Weaver라는 라이브러리이다. 스프링은 AOP 처리가 된 객체를 생성할 때 AspectJ Weaver 라이브러리의 도움을 받아서 동작하므로, pom.xml에 추가해야 한다.   
+   
+@Aspect는 해당 클래스의 객체가 Aspect를 구현한 것임을 나타내기 위해서 사용한다. @Component는 AOP와는 관계가 없지만 스프링에서 빈(bean)으로 인식하기 위해서 사용한다. @Before는 BeforeAdvie를 구현한 메서드에 추가한다. @After, @AfterReturning, @AfterThrowing, @Around 역시 동일한 방식으로 적용한다.   
+Advice와 관련된 어노테이션들은 내부적으로 Pointcut을 지정한다. Pointcut은 별도의 @Pointcut으로 지정해서 사용할 수도 있다. @Before내부의 'execution....' 문자열은 AspectJ의 표현식(expression)이다. 'execution'의 경우 접근제한자와 특정 클래스의 메서드를 지정할 수 있다. 맨 앞의 '\*'는 접근제한자를 의미하고, 맨 뒤의 '\*'는 클래스의 이름과 메서드의 이름을 의미한다.   
+   
+스프링 프로젝트에 AOP를 설정하는 것은 스프링 2버전 이후에는 간단히 자동으로 Proxy 객체를 만들어주는 설정을 추가해 주면 된다. 프로젝트의 root-context.xml을 선택해서 네임스페이스에 'aop'와 'context'를 추가한다.   
+root-context.xml에 아래와 같은 내용을 추가한다.   
+```xml
+<context:annotation-config></context:annotation-config>
+	
+<context:component-scan base-package="org.zerock.service"></context:component-scan>
+<context:component-scan base-package="org.zerock.aop"></context:component-scan>
+
+<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+```   
+root-context.xml에서는 <component-scan>을 이용해서 'org.zerock.service'패키지와 'org.zerock.aop'패키지를 스캔한다. 이 과정에서 SampleServiceImpl 클래스와 LogAdvice는 스프링의 빈(객체)으로 등록될 것이고, <aop:aspectj-autoproxy>를 이용해서 LogAdvice에 설정한 @Before가 동작하게 된다.   
+   
+args를 이용한 파라미터 추적
+---
+```java
+@Before("execution(* org.zerock.service.SampleService*.doAdd(String,String)) && args(str1, str2)")
+public void logBeforeWithParam(String str1, String str2){
+   log.info("str1: " + str1);
+   log.info("str2: " + str2);
+}
+```   
+logBeforeWithParam()에서는 'execution'으로 시작하는 Pointcut 설정에 doAdd()메서드를 명시하고, 파라미터의 타입을 지정했다. 뒤쪽의 '&& args(...' 부분에는 변수명을 지정하는데, 이 2종류의 정보를 이용해서 logBeforeWithParam() 메서드의 파라미터를 설정하게 된다.   
+'&& args'를 이용하는 설정은 간단히 파라미터를 찾아서 기록할 때에는 유용하지만 파라미터가 다른 여러 종류의 메서드에 적용하는 데에는 간단하지 않다는 단점이 있다. 이에 대한 문제는 @Around와 ProceedingJoinPoint를 이용해서 해결할 수 있다.   
+   
+
 
 part4
 ===
