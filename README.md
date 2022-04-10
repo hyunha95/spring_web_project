@@ -12,6 +12,104 @@ part6
 - Ajax를 이용하는 방식: 첨부파일을 별도로 처리하는 방식     
    \<input type='file'\>을 이용하고 Ajax로 처리하는 방식   
    HTML5의 Drag And Drop 기능이나 jQuery 라이브러리를 이용해서 처리하는 방식   
+   
+Part5
+===
+AOP(Aspect-Oriented Programming)는 '관점 지향 프로그래밍'이라는 의미로 번역되는데, 객체지향에서 특정 비즈니스 로직에 걸림돌이 되는 공통 로직을 제거할 수 있는 방법을 제공한다. AOP를 적용하면 기존의 코드에 첨삭 없이, 메소드의 호출 이전 혹은 이후에 필요한 로직을 수행하는 방법을 제공한다.   
+트랜잭션 작업은 데이터베이스를 이용할 때 '두 개 이상의 작업이 같이 영향을 받는 경우에'에 필요하다. 과거에는 코드 내에 개발자가 직업 이를 지정하고 사용했다면 스프링에서는 XML이나 어노테이션만으로 트랜잭션이 결과를 만들어 낼 수 있다.   
+   
+![image](https://user-images.githubusercontent.com/76119021/161429626-4930e165-49cf-4af9-9912-9b125de0c589.png)   
+개발자의 입장에서 AOP를 적용한다는 것은 기존의 코드를 수정하지 않고도 원하는 관심사(cross-concern)들을 엮을 수 있다는 점이다. 위의 그림에서 Target에 해당하는 것이 바로 개발자가 작성한 핵심 비즈니스 로직을 가지는 객체이다.Target은 순수한 비즈니스 로직을 의미하고, 어떠한 관심사들과도 관계를 맺지 않는다.   
+   
+Target을 전체적으로 감싸고 있는 존재를 Proxy라고 한다. Proxy는 내부적으로 Target을 호출하지만, 중간에 필요한 관심사들을 거쳐서 Target을 호출하도록 자동 혹은 수동으로 작성된다. Proxy의 존재는 직접 코드를 통해서 구현하는 경우도 있지만, 대부분의 경우 스프링 AOP 기능을 이용해서 자동으로 생성되는(auto-proxy) 방식을 이용한다.   
+   
+JoinPoint는 Target 객체가 가진 메서드이다. 외부에서의 호출은 Proxy 객체를 통해서 Target 객체의 JoinPoint를 호출하는 방식이라고 이해할 수 있다.   
+   
+JoinPoint는 Target이 가진 여러 메서드라고 보면 된다(엄밀하게 스프링 AOP에서는 메서드만이 JoinPoint가 된다.). Target에는 여러 메서드가 존재하기 때문에 어떤 메서드에 관심사를 결합할 것인지를 결정해야 하는데 이 결정을 'Pointcut'이라고 한다.   
+   
+Pointcut은 관심사와 비즈니스 로직이 결합되는 지점을 결정하는 것이다.   
+   
+관심사(concern)는 Aspect와 Advice라는 용어로 표현되어 있다. Aspect는 조금 추상적인 개념을 의미한다. Aspect는 관심사 자체를 의미하는 추상명사라고 볼 수 있고, Advice는 Aspect를 구현한 코드이다. Advice는 실제 걱정거리를 분리해 놓은 코드를 의미한다. Advice는 그 동작 위치에 따라 다음과 같이 구분된다.   
+- Before Advice: Target의 JoinPoint를 호출하기 전에 실행되는 코드이다. 코드의 실행 자체에는 관여할 수 없다.   
+- After Returning Advice: 모든 실행이 정상적으로 이루어진 후에 동작하는 코드이다.   
+- After Throwing Advice: 예외가 발생한 뒤에 동작하는 코드이다.   
+- After Advice: 정상적으로 실행되거나 예외가 발생했을 때 구분 없이 실행되는 코드이다.   
+- Around Advice: 메서드의 실행 자체를 제어할 수 있는 가장 강력한 코드이다. 직접 대상 메서드를 호출하고 결과나 예외를 처리할 수 있다.   
+   
+Advice를 정의하는 어노테이션   
+- @Before("pointcut")
+- @After("pointcut")
+- @Around("pointcut")
+- @AfterReturning(pointcut="", returning="")
+- @AfterThrowing(pointcut="", throwing="")   
+   
+@Pointcut 어노테이션 표현식   
+Pointcut표현식 / execution(* com.kh.biz.\*Impl.\*(..))   
+\* : 리턴타입   
+com.kh.biz : 패키지 경로   
+.\*Impl. : 클래스명   
+\*(..) : 메소드명 및 매개변수   
+- 예시의 표현식은 리턴 타입과 매개변수를 무시하고, com.kh.biz.패키지로 시작하는 클래스 중 이름이 Impl로 끝나는 클래스의 모든 메소드를 뜻한다.
+   
+Pointcut은 Advice를 어떤 JoinPoint에 결합할 것인지를 결정하는 설정이다. AOP에서 Target은 결과적으로 Pointcut에 의해서 자신에게는 없는 기능들을 가지게 된다. Pointcut은 다양한 형태로 선언해서 사용할 수 있느데 주로 사용되는 설정은 다음과 같다.   
+- execution(@execution): 메서드를 기준으로 Pointcut을 설정한다.   
+- within(@within): 특정한 타입(클래스)을 기준으로 Pointcut을 설정한다.   
+- this: 주어진 인터페이스를 구현한 객체를 대상으로 Pointcut을 설정한다.   
+- args(@args): 특정한 파라미터를 가지는 대상들만을 Pointcut으로 설정한다.   
+- @annotation: 특정한 어노테이션이 적용된 대상들만을 Pointcut으로 설정한다.   
+   
+AOP 설정과 관련해서 가장 중요한 라이브러리는 AspectJ Weaver라는 라이브러리이다. 스프링은 AOP 처리가 된 객체를 생성할 때 AspectJ Weaver 라이브러리의 도움을 받아서 동작하므로, pom.xml에 추가해야 한다.   
+   
+@Aspect는 해당 클래스의 객체가 Aspect를 구현한 것임을 나타내기 위해서 사용한다. @Component는 AOP와는 관계가 없지만 스프링에서 빈(bean)으로 인식하기 위해서 사용한다. @Before는 BeforeAdvie를 구현한 메서드에 추가한다. @After, @AfterReturning, @AfterThrowing, @Around 역시 동일한 방식으로 적용한다.   
+Advice와 관련된 어노테이션들은 내부적으로 Pointcut을 지정한다. Pointcut은 별도의 @Pointcut으로 지정해서 사용할 수도 있다. @Before내부의 'execution....' 문자열은 AspectJ의 표현식(expression)이다. 'execution'의 경우 접근제한자와 특정 클래스의 메서드를 지정할 수 있다. 맨 앞의 '\*'는 접근제한자를 의미하고, 맨 뒤의 '\*'는 클래스의 이름과 메서드의 이름을 의미한다.   
+   
+스프링 프로젝트에 AOP를 설정하는 것은 스프링 2버전 이후에는 간단히 자동으로 Proxy 객체를 만들어주는 설정을 추가해 주면 된다. 프로젝트의 root-context.xml을 선택해서 네임스페이스에 'aop'와 'context'를 추가한다.   
+root-context.xml에 아래와 같은 내용을 추가한다.   
+```xml
+<context:annotation-config></context:annotation-config>
+	
+<context:component-scan base-package="org.zerock.service"></context:component-scan>
+<context:component-scan base-package="org.zerock.aop"></context:component-scan>
+
+<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+```   
+root-context.xml에서는 <component-scan>을 이용해서 'org.zerock.service'패키지와 'org.zerock.aop'패키지를 스캔한다. 이 과정에서 SampleServiceImpl 클래스와 LogAdvice는 스프링의 빈(객체)으로 등록될 것이고, <aop:aspectj-autoproxy>를 이용해서 LogAdvice에 설정한 @Before가 동작하게 된다.   
+   
+args를 이용한 파라미터 추적
+---
+```java
+@Before("execution(* org.zerock.service.SampleService*.doAdd(String,String)) && args(str1, str2)")
+public void logBeforeWithParam(String str1, String str2){
+   log.info("str1: " + str1);
+   log.info("str2: " + str2);
+}
+```   
+logBeforeWithParam()에서는 'execution'으로 시작하는 Pointcut 설정에 doAdd()메서드를 명시하고, 파라미터의 타입을 지정했다. 뒤쪽의 '&& args(...' 부분에는 변수명을 지정하는데, 이 2종류의 정보를 이용해서 logBeforeWithParam() 메서드의 파라미터를 설정하게 된다.   
+'&& args'를 이용하는 설정은 간단히 파라미터를 찾아서 기록할 때에는 유용하지만 파라미터가 다른 여러 종류의 메서드에 적용하는 데에는 간단하지 않다는 단점이 있다. 이에 대한 문제는 @Around와 ProceedingJoinPoint를 이용해서 해결할 수 있다.   
+   
+ProceedingJoinPoint는 AOP의 대상이 되는 Target이나 파라미터 등을 파악할 뿐만 아니라, 직접 실행을 결정할 수도 있다. @Before 등과 달리 @Around가 적용되는 메서드의 경우에는 리턴 타입이 void가 아닌 타입으로 설정하고, 메서드의 실행 결과 역시 직접 반환하는 형태로 작성해야 한다.   
+@Around와 @Before에 같은 pointcut이 설정되어 있다면 @Around가 먼저 동작하고 @Before 등이 실행된다.
+   
+Spring AOP의 특징
+---
+1. Spring은 프록시(Proxy) 기반 AOP를 지원한다.   
+Spring은 대상 객체(Target Object)에 대한 프록시를 만들어 제공하며, 타겟을 감싸는 프록시는 서버 Runtime 시에 생성된다. 이렇게 생성된 프록시는 대상 객체를 호출할 때 먼저 호출되어 어드바이스의 로직을 처리 후 대상 객체를 호출한다.   
+Proxy: 대상 객체를 직접 접근하지 못하게 '대리인'으로써 요청을 대신 받는 기술
+2. Proxy는 대상 객체의 호출을 가로챈다.(Intercept)   
+Proxy는 그 역할에 따라 타켓 객체에 대한 호출을 가로챈 다음 어드바이스의 부가기능 로직을 수행하고 난 후에 타겟의 핵심기능 로직을 호출하거나 (전처리 어드바이스) 타겟의 핵심기능 로직 메서드를 호출한 후에 부가기능(어드바이스)을 수행한다.(후처리 어드바이스)   
+3. Spring AOP는 메소드 조인 포인트만 지원한다.   
+Spring은 동적 프록시를 기반으로 AOP를 구현하기 때문에 메소드 조인 포인트만 지원한다. 즉, 핵심기능(대상 객체)의 메소드가 호출되는 런타임 시점에만 부가기능(어드바이스)을 적용할 수 있다.   
+하지만, AspectJ 같은 고급 AOP 프레임워크를 사용하면 객체의 생성, 필드값의 조회와 조작, static 메서드 호출 및 초기화 등의 다양한 작업에 부가기능을 적용할 수 있다.   
+   
+JoinPoint Interface 메소드
+---
+- getArgs(): 메소드의 매개 변수를 반환한다.
+- getThis(): 현재 사용 중인 프록시 객체를 반환한다.
+- getTarget(): 대상 객체를 반환한다.
+- getSignature(): 대상 객체 메소드의 설명(메소드 명, 리턴 타입 등)을 반환한다.
+- toString(): 대상 객체 메소드의 정보를 출력한다.
+	
+
 
 part4
 ===
@@ -71,6 +169,42 @@ Create -> POST
 Read -> GET   
 Update -> PUT   
 Delete -> DELETE   
+
+@Param어노테이션과 댓글 목록
+---   
+Mybatis는 두 개 이상의 데이터를 파라미터로 전달하기 위해서는 1) 별도의 객체로 구성하거나, 2)Map을 이용하는 방식, 3) @Param을 이용해서 이름을 사용하는 방식이 있다. @Param의 속성값은 MyBatis에서 SQL을 이용할 때 '#{}'의 이름으로 사용이 가능하다.   
+``` java
+public List<ReplyVO> getListWithPaging(@Param("cri") Criteria cri, @Param("bno") Long bno);
+```
+XML에서 '#{bno}'가 @Param("bno")와 매칭되어서 사용되는 점에 주목해야 한다.   
+   
+REST 방식으로 동작하는 URL을 설계할 때는 PK를 기준으로 작성하는 것이 좋다. PK만으로 조회, 수정, 삭제가 가능하기 때문이다. 다만 댓글의 목록은 PK를 사용할 수 없기 때문에 파라미터로 필요한 게시물의 번호(bno)와 페이지 번호(page) 정보들을 URL에서 표현하는 방식을 사용한다.   
+REST방식으로 처리할 때 주의해야 하는 점은 브라우저나 외부에서 서버를 호출할 때 데이터의 포맷과 서버에서 보내주는 데이터의 타입을 명확히 설계해야 하는 것이다.   
+   
+JavaScript의 모듈화
+---   
+JavaScript에서 가장 많이 사용하는 패턴 중 하나는 모듈 패턴이다. 모듈 패턴은 쉽게 말해서 관련 있는 함수들을 하나의 모듈처럼 묶음으로 구성하는 것을 의미한다. JavaScript의 클로저를 이용하는 가장 대표적인 방법이다.   
+모듈 패턴은 쉽게 말해서 Java의 클래스처럼 JavaScript를 이용해서 메서드를 가지는 객체를 구성한다. 모듈 패턴은 JavaScript의 즉시 실행함수와 '{}'를 이용해서 객체를 구성한다. JavaScript의 즉시 실행함수는 () 안에 함수를 선언하고 바깥쪽에서 실행해 버린다. 즉시 실행함수는 함수의 실행 결과가 바깥쪽에 선언된 변수에 할당된다.   
+``` javascript
+var replyService = (function(){
+   return {name:"AAAA"};
+})();
+```   
+위의 코드에서는 replyService라는 변수에 name이라는 속성에 'AAAA'라는 속성값을 가진 객체가 할당된다.   
+   
+XML이나 JSON 형태로 데이터를 받을 때는 순수하게 숫자로 표현되는 시간 값이 나오게 되어 있으므로, 화면에서는 이를 변환해서 사용하는 것이 좋다.   
+   
+특정 댓글의 클릭 이벤트 처리
+---   
+DOM에서 이벤트 리스너를 등록하는 것은 반드시 해당 DOM요소가 존재해야만 가능하다. 동적으로 Ajax를 통해서 \<li\> 태그들이 만들어지면 이후에 이벤트를 등록해야 하기 떄문에 일반적인 방식이 아니라 '이벤트 위임(delegation)'의 형태로 작성해야 한다.   
+'이벤트 위임'이 말은 거창하지만 실제로는 이벤트를 동적으로 생성되는 요소가 아닌 이미 존재하는 요소에 이벤트를 걸어주고, 나중에 이벤트의 대상을 변경해 주는 방식이다. jQuery는 on()을 이용해서 쉽게 처리할 수 있다.   
+``` javascript
+$(".chat").on("click", "li", function(e){
+   var rno = $(this).data("rno");
+   console.log(rno);
+});
+```   
+jQuery에서 이벤트를 위임하는 방식은 이미 존해하는 DOM 요소에 이벤트를 처리하고 나중에 동적으로 생기는 요소들에 대해서 파라미터 형식으로 지정한다. 위의 경우 \<ul\>태그의 클래스인 'chat'을 이용해서 이벤트를 걸고 실제 이벤트의 대상은 \<li\>태그가 되도록 한다.
 
 part3
 ===
