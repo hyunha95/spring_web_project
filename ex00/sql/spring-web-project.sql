@@ -171,6 +171,7 @@ select rno, bno, reply, replyer, replydate, updatedate
 			) where rn > 10;
 select * from tbl_reply where bno = 3;
 
-
+create table tbl_sample1(col1 varchar2(500));
+create table tbl_sample2(col2 varchar2(50));
 
 
