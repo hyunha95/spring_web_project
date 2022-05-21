@@ -26,8 +26,18 @@ part6
 Ajax를 이용하는 파일 업로드
 ---
 jQuery를 이용하는 경우에 파일 업로드는 FormData라는 객체를 이용하게 된다(브라우저의 제약이 있으므로 주의한다.). FormData는 쉽게 말해서 가상의 form태그와 같다고 생각하면 된다. Ajax를 이용하는 파일 업로드는 FormData를 이용해서 필요한 파라미터를 담아서 전송하는 방식이다.   
+https://github.com/hyunha95/spring_web_project/blob/bff44add332faef1ca81ae8ea8240b29f259a023/ex05/src/main/webapp/WEB-INF/views/uploadAjax.jsp#L19   
+첨부파일 데이터는 formData에 추가한 뒤에 Ajax를 통해서 formData 자체를 전송한다. 이때 processData와 contentType은 반드시 'false'로 지정해야만 전송되므로 주의해야 한다. UploadController에서는 기존과 동일하게 MultipartFile타입을 이용해서 첨부파일 데이터를 처리한다.
+   
+파일 업로드에서 고려해야 하는 점들   
+- 동일한 이름으로 파일이 업로드 되었을 때 기존 파일이 사라지는 문제   
+- 이미지 파일의 경우에는 원본 파일의 용량이 큰 경우 섬네일 이미지를 생성해야 하는 문제   
+- 이미지 파일과 일반 파일을 구분해서 다운로드 혹은 페이지에서 조회하도록 처리하는 문제   
+- 첨부파일 공격에 대비하기 위한 업로드 파일의 확장자 제한
 
 
+
+   
    
 Part5
 ===
