@@ -19,7 +19,14 @@ part6
 - 서블릿 3.0이상 - 3.0이상부터는 자체적인 파일 업로드 처리가 API 상에서 지원   
 1. web.xml에 multipart-config 태그추가   
 2. web.xml의 설정은 WAS(Tomcat) 자체의 설정일 뿐이고, 스프링에서 업로드 처리는 MultipartResolver라는 타입의 객체를 빈으로 등록해야만 가능하다. Web과 관련된 설정이므로 servlet-context.xml을 이용해서 설정한다.   
-3. 첨부파일을 처리하는 빈을 설정할 때 id는 'multipartResolver'라는 이름으로 지정된 이름을 사용한다.
+3. 첨부파일을 처리하는 빈을 설정할 때 id는 'multipartResolver'라는 이름으로 지정된 이름을 사용한다.   
+4. 파일 업로드에서 가장 신경 써야 하는 부분은 enctype의 속성값을 'multipart/form-data'로 지정하는 것이다. \<input type='file'\>의 경우 최근 브라우저에서는 'multiple'이라는 속성을 지원하는데 이를 이용하면 하나의 input태그로 한꺼번에 여러 개의 파일을 업로드할 수 있다.   
+5. 업로드되는 파일을 저장하는 방법은 간단히 MultipartFile의 transferTo()를 이용해서 처리할 수 있다.   
+   
+Ajax를 이용하는 파일 업로드
+---
+jQuery를 이용하는 경우에 파일 업로드는 FormData라는 객체를 이용하게 된다(브라우저의 제약이 있으므로 주의한다.). FormData는 쉽게 말해서 가상의 form태그와 같다고 생각하면 된다. Ajax를 이용하는 파일 업로드는 FormData를 이용해서 필요한 파라미터를 담아서 전송하는 방식이다.   
+
 
    
 Part5
