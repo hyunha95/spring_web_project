@@ -12,6 +12,15 @@ part6
 - Ajax를 이용하는 방식: 첨부파일을 별도로 처리하는 방식     
    \<input type='file'\>을 이용하고 Ajax로 처리하는 방식   
    HTML5의 Drag And Drop 기능이나 jQuery 라이브러리를 이용해서 처리하는 방식   
+
+
+- cos.jar: 2002년도 이후에 개발이 종료되었으므로, 더 이상 사용하는 것을 권장하지 않는다.   
+- commons-fileupload: 가장 일반적으로 많이 활용되고, 서블릿 스펙 3.0 이전에도 사용가능   
+- 서블릿 3.0이상 - 3.0이상부터는 자체적인 파일 업로드 처리가 API 상에서 지원   
+1. web.xml에 multipart-config 태그추가   
+2. web.xml의 설정은 WAS(Tomcat) 자체의 설정일 뿐이고, 스프링에서 업로드 처리는 MultipartResolver라는 타입의 객체를 빈으로 등록해야만 가능하다. Web과 관련된 설정이므로 servlet-context.xml을 이용해서 설정한다.   
+3. 첨부파일을 처리하는 빈을 설정할 때 id는 'multipartResolver'라는 이름으로 지정된 이름을 사용한다.
+
    
 Part5
 ===
