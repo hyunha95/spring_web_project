@@ -25,8 +25,24 @@ $(document).ready(function(){
 		console.log(inputFile);
 		
 		var files = inputFile[0].files;
-		console.log(inputFile[0]);
 		console.log(files);
+		
+		// add File Data to formData
+		for(var i = 0; i < file.length; i++){
+			forData.append("uploadFile", file[i]);
+		}
+		
+		$.ajax({
+			url: "/uploadAjaxAction",
+			processData: false,
+			contentType: false,
+			data: formData,
+			type: 'POST',
+			success: function(result){
+				alert("Uploaded");
+			}
+		});
+		
 	});
 });
 </script>
