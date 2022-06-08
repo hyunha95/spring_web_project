@@ -13,6 +13,12 @@
 	</div>
 	
 	<button id="uploadBtn">Upload</button>
+	
+	<div class="uploadResult">
+		<ul>
+		
+		</ul>
+	</div>
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 <script>
@@ -33,6 +39,8 @@ $(document).ready(function(){
 		}
 		return true;
 	}
+	
+	var cloneObj = $(".uploadDiv").clone();
 	
 	$("#uploadBtn").on("click", function(e){
 		
@@ -60,12 +68,48 @@ $(document).ready(function(){
 			contentType: false,
 			data: formData,
 			type: 'POST',
+			dataType: 'json',
 			success: function(result){
-				alert("Uploaded");
+				
+				console.log(result);
+				
+				showUploadedFile(result);
+				
+				$(".uploadDiv").html(cloneObj.html());
 			}
 		});
 		
 	});
+	
+	var uploadResult = $(".uploadResult ul");
+	
+	function showUploadedFile(uploadResultArr) {
+		
+		var str = "";
+		
+		$(uploadResultArr).each(function(i, obj) {
+			str += "<li>" + obj.fileName + "</li>";
+		});
+		
+		uploadResult.append(str);
+	}
+	
 });
 </script>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
