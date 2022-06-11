@@ -5,6 +5,27 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;" charset="utf-8">
 <title>Insert title here</title>
+<style>
+.uploadResult {
+	width=100%;
+	background-color: gray;
+}
+.uploadResult ul {
+	display:flex;
+	flex-flow: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.uploadResult ul li {
+	list-style: none;
+	padding: 10px;
+}
+
+.uploadResult ul li img {
+	width: 20px;
+}
+</style>
 </head>
 <body>
 	<h1>Upload with Ajax</h1>
@@ -88,9 +109,16 @@ $(document).ready(function(){
 		var str = "";
 		
 		$(uploadResultArr).each(function(i, obj) {
-			str += "<li>" + obj.fileName + "</li>";
+			if(!obj.image){
+				str += "<li><img src='/resources/img/attach.png'>" + obj.filename + "</li>"	
+			} else {
+				str += "<li>" + obj.fileName + "</li>"
+				
+				var fileCallPath = encodeURIComponent( obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+				
+				str += "<li><img src='/display?fileName=" + fileCallPath + "'></li>"
+			}
 		});
-		
 		uploadResult.append(str);
 	}
 	
