@@ -4,7 +4,30 @@ part7
 ===
 거의 대부분 웹 기반의 프로젝트에서는 사용자의 권한이나 등급에 기반을 두는 로그인 체크를 이용한다. 웹에서는 기본적으로 쿠키를 이용하거나 세션을 이용하는 방식이 일반적이다. 스프링에서도 이를 활용할 수 있는 방법은 interceptor 등을 이용해서 처리할 수 있다.   
 스프링 시큐리티의 기본 동작 방식은 서블릿의 여러 종류의 필터와 인터셉터를 이용해서 처리된다. 필터는 서블릿에서 말하는 단순한 칠터를 의미하고, 인터셉터(Interceptor)는 스프링에서 필터와 유사한 역할을 한다.   
-필터와 인터셉터는 특정한 서블릿이나 컨트롤러의 접근에 관여하는다는 점에서는 유사히지만 결정적인 차이를 구분하자면 필터는 스프링과 무관하게 서블릿 자원이고, 인터셉터는 스프링의 빈으로 관리되면서 스프링의 컨텍스트 내에 속한다는 차이이다.
+필터와 인터셉터는 특정한 서블릿이나 컨트롤러의 접근에 관여하는다는 점에서는 유사히지만 결정적인 차이를 구분하자면 필터는 스프링과 무관하게 서블릿 자원이고, 인터셉터는 스프링의 빈으로 관리되면서 스프링의 컨텍스트 내에 속한다는 차이이다.   
+
+인증(Authentication)과 권한 부여(Authorization - 인가)
+---
+스프링 시큐리이의 통작을 이해라기 위해서는 가장 중요한 용어인 인증(Authentication)과 권한(Authorization)에 대한 이해이다. 인증과 권한에 대한 두 단어의 의미에 대해서는 정확히 정리할 필요가 있다.   
+'인증(Authentication)'은 쉽게 말해서 '자신을 증명하는 것'이다. 다시 말해서 자기 스스로가 무언가 자신을 증명할 만한 자료를 제시하는 것이다. 반면에 '권한 부여(Authorization)'는 남에 의해서 자격이 부여된다는 점에서 차이가 있다.   
+스프링 시큐리티에서 가장 중요한 역할을 하는 존재가 인증을 담당하는 AuthenticationManager(인증 매니저)라는 존재이다.   
+<img width="920" alt="spring_security" src="https://user-images.githubusercontent.com/76119021/173207795-9ddeaa9c-bc89-41e7-869c-abfb15babc23.png">   
+ProviderManager는 인증에 대한 처리를 AuthenticationProvider라는 타입의 객체를 이용해서 처리를 위임한다. AuthenticationProvider(인증 제공자)는 실제 인증 작업을 진행한다. 이때 인증된 정보에는 권한에 대한 정보를 같이 전달하게 되는데 이 처리는 UserDetailsService라는 존재와 관련 있다. UserDetailsService 인터페이스의 구현체는 실제로 사용자의 정보와 사용자가 가진 권한의 정보를 처리해서 반환하게 된다.   
+개발자가 스프링 시큐리티를 커스터마이징 하는 방식은 크게 AuthenticationProvider를 직접 구현하는 방식과 실제 처리를 담당하는 UserDetailsService를 구현하는 방식으로 나누어 진다. 대부분의 경우에는 UserDetailsService를 구현하는 형태를 사용하는 것만으로도 충분하지만, 새로운 프로토콜이나 인증 구현 방식을 직접 구현하는 경우에는 AuthenticationProvider 인터페이스를 직접 구현해서 사용한다.   
+   
+접근 제한 설정
+---
+특정한 URI에 접근할 때 인터셉터를 이용해서 접근을 제한하는 설정은 \<security:intercept-url\>을 이용한다. \<security:intercept-url\>은 pattern이라는 속성과 access라는 속성을 지정해야만 한다. pattern 속성은 말 그대로 URI의 패턴을 의미하고, access의 경우는 권한을 체크한다.   
+   
+단순 로그인 처리
+---
+보통 시스템에서 사용자 아이디를 의미하는 userid는 스프링 시큐리티에서는 username에 해당한다. 일반적으로 사용자의 이름을 username이라고 처리하는 것과 혼동하면 안 된다.   
+   
+스프링 시큐리티 5버전부터 반드시 PasswordEncoder라는 존재를 이용하도록 변경되었다. 스프링 시큐리티 4버전까지는 PasswordEncoder의 지정이 없어도 동작했지만, 5버전부터는 PasswordEncoder의 지정이 반드시 필요하다.   
+   
+접근 제한 메시지의 처리
+---
+\<security:access-denied-handler\>는 org.springframework.security.web.access.AccessDeniedHandler 인터페이스의 구현체를 지정하거나 error-page를 지정할 수 있다.
 
 
 part6
