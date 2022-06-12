@@ -27,7 +27,20 @@ ProviderManager는 인증에 대한 처리를 AuthenticationProvider라는 타�
    
 접근 제한 메시지의 처리
 ---
-\<security:access-denied-handler\>는 org.springframework.security.web.access.AccessDeniedHandler 인터페이스의 구현체를 지정하거나 error-page를 지정할 수 있다.
+\<security:access-denied-handler\>는 org.springframework.security.web.access.AccessDeniedHandler 인터페이스의 구현체를 지정하거나 error-page를 지정할 수 있다.   
+   
+CSRF(Cross-site request forgery) 공격과 토큰
+---
+별도의 설정이 없다면 스프링 시큐리티가 적용된 사이트의 모든 POST방식에는 CSRF 토큰이 사용되는데 '사이트간 위조 방지'를 목적으로 특정한 값의 토큰을 사용하는 방식이다.   
+CSRF 공격은 '사이트간 요청 위조'라고 변역될 수 있다. 서버에서 받아들이는 정보가 특별히 사전 조건을 검증하지 않는다는 단점을 이용하는 공격 방식이다.   
+   
+CSRF 토큰
+---
+CSRF 토큰은 사용자가 임의로 변하는 특정한 토큰값을 서버에서 체크하는 방식이다. 서버에는 브라우저에 데이터를 전송할 때 CSRF 토큰을 같이 전송한다. 사용자가 POST 방식 등으로 특정한 작업을 할 때는 브라우저에서 전송된 CSRF 토큰의 값과 서버가 보관하는 있는 토큰의 값을 비굑한다. 만일 CSRF 토큰의 값이 다르다면 작업을 처리하지 않는 방식이다.   
+   
+로그인 성공과 AuthenticationSuccessHandler
+---
+
 
 
 part6
