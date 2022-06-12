@@ -13,8 +13,21 @@ part7
 스프링 시큐리티에서 가장 중요한 역할을 하는 존재가 인증을 담당하는 AuthenticationManager(인증 매니저)라는 존재이다.   
 <img width="920" alt="spring_security" src="https://user-images.githubusercontent.com/76119021/173207795-9ddeaa9c-bc89-41e7-869c-abfb15babc23.png">   
 ProviderManager는 인증에 대한 처리를 AuthenticationProvider라는 타입의 객체를 이용해서 처리를 위임한다. AuthenticationProvider(인증 제공자)는 실제 인증 작업을 진행한다. 이때 인증된 정보에는 권한에 대한 정보를 같이 전달하게 되는데 이 처리는 UserDetailsService라는 존재와 관련 있다. UserDetailsService 인터페이스의 구현체는 실제로 사용자의 정보와 사용자가 가진 권한의 정보를 처리해서 반환하게 된다.   
-개발자가 스프링 시큐리티를 커스터마이징 하는 방식은 크게 AuthenticationProvider를 직접 구현하는 방식과 실제 처리를 담당하는 UserDetailsService를 구현하는 방식으로 나누어 진다. 대부분의 경우에는 UserDetailsService를 구현하는 형태를 사용하는 것만으로도 충분하지만, 새로운 프로토콜이나 인증 구현 방식을 직접 구현하는 경우에는 AuthenticationProvider 인터페이스를 직접 구현해서 사용한다.
-
+개발자가 스프링 시큐리티를 커스터마이징 하는 방식은 크게 AuthenticationProvider를 직접 구현하는 방식과 실제 처리를 담당하는 UserDetailsService를 구현하는 방식으로 나누어 진다. 대부분의 경우에는 UserDetailsService를 구현하는 형태를 사용하는 것만으로도 충분하지만, 새로운 프로토콜이나 인증 구현 방식을 직접 구현하는 경우에는 AuthenticationProvider 인터페이스를 직접 구현해서 사용한다.   
+   
+접근 제한 설정
+---
+특정한 URI에 접근할 때 인터셉터를 이용해서 접근을 제한하는 설정은 \<security:intercept-url\>을 이용한다. \<security:intercept-url\>은 pattern이라는 속성과 access라는 속성을 지정해야만 한다. pattern 속성은 말 그대로 URI의 패턴을 의미하고, access의 경우는 권한을 체크한다.   
+   
+단순 로그인 처리
+---
+보통 시스템에서 사용자 아이디를 의미하는 userid는 스프링 시큐리티에서는 username에 해당한다. 일반적으로 사용자의 이름을 username이라고 처리하는 것과 혼동하면 안 된다.   
+   
+스프링 시큐리티 5버전부터 반드시 PasswordEncoder라는 존재를 이용하도록 변경되었다. 스프링 시큐리티 4버전까지는 PasswordEncoder의 지정이 없어도 동작했지만, 5버전부터는 PasswordEncoder의 지정이 반드시 필요하다.   
+   
+접근 제한 메시지의 처리
+---
+\<security:access-denied-handler\>는 org.springframework.security.web.access.AccessDeniedHandler 인터페이스의 구현체를 지정하거나 error-page를 지정할 수 있다.
 
 
 part6
