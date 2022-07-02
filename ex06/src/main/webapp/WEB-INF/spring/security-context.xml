@@ -20,7 +20,9 @@
 		 <security:access-denied-handler ref="customAccessDenied"/>
 
 		<!-- <security:form-login/> -->
-		<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess" />		
+		<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess" />	
+		
+		<security:logout logout-url="/customLogout" invalidate-session="true"/>	
 		
 		<!-- <security:csrf disabled="true"/> -->
 		
@@ -29,11 +31,7 @@
 	<security:authentication-manager>
 	
 		<security:authentication-provider>
-			<security:user-service>
-				<security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
-				
-				<security:user name="admin" password="{noop}admin" authorities="ROLE_MEMBER, ROLE_ADMIN"/>
-			</security:user-service>
+			
 		</security:authentication-provider>
 	
 	</security:authentication-manager>
